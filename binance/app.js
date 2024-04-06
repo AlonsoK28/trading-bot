@@ -492,6 +492,11 @@ async function withdraw(profits, price) {
 }
 
 async function init() {
+
+    const result = validateProcessArgs() && validateEnvConfig();
+
+    if (!result) return;
+
     const minBuy = await getMinBuy()
     if (minBuy > BUY_ORDER_AMOUNT) {
         console.log(`El lote mínimo de compra es: ${minBuy} ${MARKET2}`)
@@ -520,6 +525,39 @@ async function init() {
     }
 
     broadcast()
+
+    function validateProcessArgs() {
+        if (!MARKET1) {
+            console.log('argument for "Market 1" is required');
+            return false;
+        }
+
+        if (!MARKET2) {
+            console.log('argument for "Market 2" is required');
+            return false;
+        }
+
+        if (!BUY_ORDER_AMOUNT) {
+            console.log('argument for "Buy Order amount" is required');
+            return false;
+        }
+
+        return true;
+    }
+
+    function validateEnvConfig() {
+        if (!process.env.APIKEY) {
+            console.log('value for "APIKEY" is required into env config');
+            return false;
+        }
+
+        if (!process.env.SECRET) {
+            console.log('value for "SECRET" is required into env config');
+            return false;
+        }
+
+        return true;
+    }
 }
 
 init()
